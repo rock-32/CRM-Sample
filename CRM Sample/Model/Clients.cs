@@ -10,6 +10,7 @@
         public string Password { get; set; }
         public string Address { get; set; }
         public List<Branch> branches { get; set; }
+        //public List<Campaign> campaigns { get; set; }
         
     }
 }

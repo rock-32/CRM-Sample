@@ -11,15 +11,18 @@
         public DateTime NextFollowUp { get; set; }
         public string FollowUpNote {  get; set; }
         public int Source_Id {  get; set; }
-        public Source source { get; set; }
+        //public LeadSource sources { get; set; }
         public int Status_Id { get; set; }
-        public Status status { get; set; }
-        //public int Department_Id { get; set; }
-        //public Department department { get; set; }
-        //public int Branch_Id { get; set; }
-        //public Branch branch { get; set; }
-        public int User_Id { get; set;}
-        public Users users { get; set; }
-        public List<LeadsHistory> leadshistory { get; set; }
+        //public LeadStatus status { get; set; }
+        public int Department_Id { get; set; }
+        //public Department departments { get; set; }
+        public int Branch_Id { get; set; }
+        //public Branch branches { get; set; }
+        public int Staff_Id { get; set;}
+        //public Staffs Staff { get; set; }
+        public int Campaign_Id { get; set; }
+        //public Campaign campaigns { get; set; }
+
+        //public List<LeadsHistory> leadshistory { get; set; }
     }
 }

@@ -4,6 +4,6 @@
     {
         public int Id { get; set; }
         public string RoleName { get; set; }
-        public List<Users> users { get; set; }
-    }
+/*        public List<Staffs> users { get; set; }
+*/    }
 }

@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace CRM_Sample.Migrations
 {
     [DbContext(typeof(CrmDbContext))]
-    [Migration("20240319111513_initial10")]
-    partial class initial10
+    [Migration("20240320143607_initial")]
+    partial class initial
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -44,7 +44,7 @@ namespace CRM_Sample.Migrations
 
                     b.HasIndex("Client_Id");
 
-                    b.ToTable("braches");
+                    b.ToTable("BranchTb");
                 });
 
             modelBuilder.Entity("CRM_Sample.Model.CRMAdmin", b =>
@@ -65,7 +65,7 @@ namespace CRM_Sample.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("CRMAdmins");
+                    b.ToTable("CRMAdminTb");
                 });
 
             modelBuilder.Entity("CRM_Sample.Model.Campaign", b =>
@@ -80,6 +80,9 @@ namespace CRM_Sample.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int>("Client_Id")
+                        .HasColumnType("int");
+
                     b.Property<DateTime>("Date")
                         .HasColumnType("datetime2");
 
@@ -87,9 +90,14 @@ namespace CRM_Sample.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int>("clientsId")
+                        .HasColumnType("int");
+
                     b.HasKey("Id");
 
-                    b.ToTable("campaigns");
+                    b.HasIndex("clientsId");
+
+                    b.ToTable("CampaignTb");
                 });
 
             modelBuilder.Entity("CRM_Sample.Model.Clients", b =>
@@ -126,7 +134,7 @@ namespace CRM_Sample.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Clients");
+                    b.ToTable("ClientsTb");
                 });
 
             modelBuilder.Entity("CRM_Sample.Model.Department", b =>
@@ -144,11 +152,48 @@ namespace CRM_Sample.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int>("branchId")
+                        .HasColumnType("int");
+
                     b.HasKey("Id");
 
-                    b.HasIndex("Branch_Id");
+                    b.HasIndex("branchId");
 
-                    b.ToTable("departments");
+                    b.ToTable("DepartmentTb");
+                });
+
+            modelBuilder.Entity("CRM_Sample.Model.LeadSource", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("SourceName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("LeadSourceTb");
+                });
+
+            modelBuilder.Entity("CRM_Sample.Model.LeadStatus", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("StatusTitle")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("LeadStatusTb");
                 });
 
             modelBuilder.Entity("CRM_Sample.Model.Leads", b =>
@@ -166,10 +211,22 @@ namespace CRM_Sample.Migrations
                     b.Property<int?>("BranchId")
                         .HasColumnType("int");
 
+                    b.Property<int>("Branch_Id")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("CampaignId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Campaign_Id")
+                        .HasColumnType("int");
+
                     b.Property<DateTime>("CreatedDate")
                         .HasColumnType("datetime2");
 
                     b.Property<int?>("DepartmentId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Department_Id")
                         .HasColumnType("int");
 
                     b.Property<string>("Email")
@@ -179,6 +236,12 @@ namespace CRM_Sample.Migrations
                     b.Property<string>("FollowUpNote")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<int?>("LeadSourceId")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("LeadStatusId")
+                        .HasColumnType("int");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -194,25 +257,30 @@ namespace CRM_Sample.Migrations
                     b.Property<int>("Source_Id")
                         .HasColumnType("int");
 
-                    b.Property<int>("Status_Id")
+                    b.Property<int>("Staff_Id")
                         .HasColumnType("int");
 
-                    b.Property<int>("User_Id")
+                    b.Property<int?>("StaffsId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Status_Id")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
 
                     b.HasIndex("BranchId");
 
+                    b.HasIndex("CampaignId");
+
                     b.HasIndex("DepartmentId");
 
-                    b.HasIndex("Source_Id");
+                    b.HasIndex("LeadSourceId");
 
-                    b.HasIndex("Status_Id");
+                    b.HasIndex("LeadStatusId");
 
-                    b.HasIndex("User_Id");
+                    b.HasIndex("StaffsId");
 
-                    b.ToTable("Leads");
+                    b.ToTable("LeadsTb");
                 });
 
             modelBuilder.Entity("CRM_Sample.Model.LeadsHistory", b =>
@@ -233,11 +301,14 @@ namespace CRM_Sample.Migrations
                     b.Property<int>("Lead_Id")
                         .HasColumnType("int");
 
+                    b.Property<int>("leadId")
+                        .HasColumnType("int");
+
                     b.HasKey("Id");
 
-                    b.HasIndex("Lead_Id");
+                    b.HasIndex("leadId");
 
-                    b.ToTable("leadsHistories");
+                    b.ToTable("LeadsHistoryTb");
                 });
 
             modelBuilder.Entity("CRM_Sample.Model.Roles", b =>
@@ -254,91 +325,10 @@ namespace CRM_Sample.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Roles");
+                    b.ToTable("RoleTb");
                 });
 
-            modelBuilder.Entity("CRM_Sample.Model.Source", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("SourceName")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("sources");
-                });
-
-            modelBuilder.Entity("CRM_Sample.Model.Status", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("StatusTitle")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("status");
-                });
-
-            modelBuilder.Entity("CRM_Sample.Model.TaskItem", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("Description")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("ScheduleDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("TaskTitle")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("taskItems");
-                });
-
-            modelBuilder.Entity("CRM_Sample.Model.Tasks", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<int>("Taskitem_Id")
-                        .HasColumnType("int");
-
-                    b.Property<int>("User_Id")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("Taskitem_Id");
-
-                    b.HasIndex("User_Id");
-
-                    b.ToTable("tasks");
-                });
-
-            modelBuilder.Entity("CRM_Sample.Model.Users", b =>
+            modelBuilder.Entity("CRM_Sample.Model.Staffs", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -364,13 +354,72 @@ namespace CRM_Sample.Migrations
                     b.Property<int>("Role_Id")
                         .HasColumnType("int");
 
+                    b.Property<int>("branchId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("rolesId")
+                        .HasColumnType("int");
+
                     b.HasKey("Id");
 
-                    b.HasIndex("Branch_Id");
+                    b.HasIndex("branchId");
 
-                    b.HasIndex("Role_Id");
+                    b.HasIndex("rolesId");
 
-                    b.ToTable("users");
+                    b.ToTable("StaffsTb");
+                });
+
+            modelBuilder.Entity("CRM_Sample.Model.TaskItem", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("ScheduleDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("TaskTitle")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("TaskItemTb");
+                });
+
+            modelBuilder.Entity("CRM_Sample.Model.UserTask", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("Taskitem_Id")
+                        .HasColumnType("int");
+
+                    b.Property<int>("User_Id")
+                        .HasColumnType("int");
+
+                    b.Property<int>("taskItemId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("usersId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("taskItemId");
+
+                    b.HasIndex("usersId");
+
+                    b.ToTable("UserTaskTb");
                 });
 
             modelBuilder.Entity("CRM_Sample.Model.Branch", b =>
@@ -384,11 +433,22 @@ namespace CRM_Sample.Migrations
                     b.Navigation("clients");
                 });
 
+            modelBuilder.Entity("CRM_Sample.Model.Campaign", b =>
+                {
+                    b.HasOne("CRM_Sample.Model.Clients", "clients")
+                        .WithMany("campaigns")
+                        .HasForeignKey("clientsId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("clients");
+                });
+
             modelBuilder.Entity("CRM_Sample.Model.Department", b =>
                 {
                     b.HasOne("CRM_Sample.Model.Branch", "branch")
                         .WithMany("departments")
-                        .HasForeignKey("Branch_Id")
+                        .HasForeignKey("branchId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -401,82 +461,74 @@ namespace CRM_Sample.Migrations
                         .WithMany("leads")
                         .HasForeignKey("BranchId");
 
+                    b.HasOne("CRM_Sample.Model.Campaign", null)
+                        .WithMany("leads")
+                        .HasForeignKey("CampaignId");
+
                     b.HasOne("CRM_Sample.Model.Department", null)
                         .WithMany("leads")
                         .HasForeignKey("DepartmentId");
 
-                    b.HasOne("CRM_Sample.Model.Source", "source")
+                    b.HasOne("CRM_Sample.Model.LeadSource", null)
                         .WithMany("leads")
-                        .HasForeignKey("Source_Id")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("LeadSourceId");
 
-                    b.HasOne("CRM_Sample.Model.Status", "status")
+                    b.HasOne("CRM_Sample.Model.LeadStatus", null)
                         .WithMany("leads")
-                        .HasForeignKey("Status_Id")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("LeadStatusId");
 
-                    b.HasOne("CRM_Sample.Model.Users", "users")
+                    b.HasOne("CRM_Sample.Model.Staffs", null)
                         .WithMany("leads")
-                        .HasForeignKey("User_Id")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("source");
-
-                    b.Navigation("status");
-
-                    b.Navigation("users");
+                        .HasForeignKey("StaffsId");
                 });
 
             modelBuilder.Entity("CRM_Sample.Model.LeadsHistory", b =>
                 {
                     b.HasOne("CRM_Sample.Model.Leads", "lead")
-                        .WithMany("leadshistory")
-                        .HasForeignKey("Lead_Id")
+                        .WithMany()
+                        .HasForeignKey("leadId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("lead");
                 });
 
-            modelBuilder.Entity("CRM_Sample.Model.Tasks", b =>
-                {
-                    b.HasOne("CRM_Sample.Model.TaskItem", "taskItem")
-                        .WithMany("tasks")
-                        .HasForeignKey("Taskitem_Id")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("CRM_Sample.Model.Users", "users")
-                        .WithMany("tasks")
-                        .HasForeignKey("User_Id")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("taskItem");
-
-                    b.Navigation("users");
-                });
-
-            modelBuilder.Entity("CRM_Sample.Model.Users", b =>
+            modelBuilder.Entity("CRM_Sample.Model.Staffs", b =>
                 {
                     b.HasOne("CRM_Sample.Model.Branch", "branch")
                         .WithMany("users")
-                        .HasForeignKey("Branch_Id")
+                        .HasForeignKey("branchId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("CRM_Sample.Model.Roles", "roles")
                         .WithMany("users")
-                        .HasForeignKey("Role_Id")
+                        .HasForeignKey("rolesId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("branch");
 
                     b.Navigation("roles");
+                });
+
+            modelBuilder.Entity("CRM_Sample.Model.UserTask", b =>
+                {
+                    b.HasOne("CRM_Sample.Model.TaskItem", "taskItem")
+                        .WithMany("tasks")
+                        .HasForeignKey("taskItemId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("CRM_Sample.Model.Staffs", "users")
+                        .WithMany("tasks")
+                        .HasForeignKey("usersId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("taskItem");
+
+                    b.Navigation("users");
                 });
 
             modelBuilder.Entity("CRM_Sample.Model.Branch", b =>
@@ -488,9 +540,16 @@ namespace CRM_Sample.Migrations
                     b.Navigation("users");
                 });
 
+            modelBuilder.Entity("CRM_Sample.Model.Campaign", b =>
+                {
+                    b.Navigation("leads");
+                });
+
             modelBuilder.Entity("CRM_Sample.Model.Clients", b =>
                 {
                     b.Navigation("branches");
+
+                    b.Navigation("campaigns");
                 });
 
             modelBuilder.Entity("CRM_Sample.Model.Department", b =>
@@ -498,9 +557,14 @@ namespace CRM_Sample.Migrations
                     b.Navigation("leads");
                 });
 
-            modelBuilder.Entity("CRM_Sample.Model.Leads", b =>
+            modelBuilder.Entity("CRM_Sample.Model.LeadSource", b =>
                 {
-                    b.Navigation("leadshistory");
+                    b.Navigation("leads");
+                });
+
+            modelBuilder.Entity("CRM_Sample.Model.LeadStatus", b =>
+                {
+                    b.Navigation("leads");
                 });
 
             modelBuilder.Entity("CRM_Sample.Model.Roles", b =>
@@ -508,25 +572,15 @@ namespace CRM_Sample.Migrations
                     b.Navigation("users");
                 });
 
-            modelBuilder.Entity("CRM_Sample.Model.Source", b =>
+            modelBuilder.Entity("CRM_Sample.Model.Staffs", b =>
                 {
                     b.Navigation("leads");
-                });
 
-            modelBuilder.Entity("CRM_Sample.Model.Status", b =>
-                {
-                    b.Navigation("leads");
+                    b.Navigation("tasks");
                 });
 
             modelBuilder.Entity("CRM_Sample.Model.TaskItem", b =>
                 {
-                    b.Navigation("tasks");
-                });
-
-            modelBuilder.Entity("CRM_Sample.Model.Users", b =>
-                {
-                    b.Navigation("leads");
-
                     b.Navigation("tasks");
                 });
 #pragma warning restore 612, 618
